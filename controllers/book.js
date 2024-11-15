@@ -1,21 +1,38 @@
 import Book from "../models/Book.js";
+import Author from "../models/Author.js"; // Importation correcte du modèle Author
+import Category from "../models/Category.js"; // Importation correcte du modèle Author
 
 export const fetchBooks = async (req, res) => {
   const books = await Book.find();
   res.status(200).json({ model: books, message: "success" });
 };
-
 export const getBookById = async (req, res) => {
-  console.log(req.params.id);
-  const book = await Book.findOne({ _id: req.params.id });
-  res.status(200).json({ model: book, message: "success" });
+  const { id } = req.params;
+
+  try {
+    const book = await Book.findById(id)
+      .populate("author", "firstName LastName Nationality")
+      .populate("categories", "title");
+
+    if (!book) {
+      return res.status(404).json({ error: "Book not found." });
+    }
+
+    res.status(200).json(book); // Retourne le livre avec toutes ses informations
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 export const addBook = async (req, res) => {
-  console.log(req.body);
   const book = new Book(req.body);
-  await book.save();
-  res.status(201).json({ message: "Object created!!" });
+
+  try {
+    await book.save();
+    res.status(201).json({ message: "Book created!", book });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 export const updateBook = async (req, res) => {

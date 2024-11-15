@@ -1,7 +1,9 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import routerTasks from "./routes/book.js";
+import routerBooks from "./routes/book.js";
+import authorRoutes from "./routes/author.js";
+import categoryRoutes from "./routes/category.js";
 
 mongoose
   .connect(
@@ -21,6 +23,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/books", routerTasks);
+app.use("/api/books", routerBooks);
+app.use("/api/authors", authorRoutes);
+app.use("/api/Categories", categoryRoutes);
 
 export default app;
