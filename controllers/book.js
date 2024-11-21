@@ -24,13 +24,36 @@ export const getBookById = async (req, res) => {
   }
 };
 
-export const addBook = async (req, res) => {
-  const book = new Book(req.body);
+// export const addBook = async (req, res) => {
+//   const book = new Book(req.body);
+
+//   try {
+//     await book.save();
+//     res.status(201).json({ message: "Book created!", book });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
+export const addBook2 = async (req, res) => {
+  const book = new Book(req.body); // Création d'un livre à partir des données reçues
 
   try {
+    // Vérifie si l'auteur a écrit d'autres livres
+    const existingBooks = await Book.find({ author: book.author });
+
+    if (existingBooks.length === 0) {
+      // Si aucun livre précédent n'est trouvé, renvoyer une erreur
+      return res.status(400).json({
+        message: "author must have book before add.",
+      });
+    }
+
+    // Si l'auteur a déjà des livres, on sauvegarde le nouveau
     await book.save();
-    res.status(201).json({ message: "Book created!", book });
+    res.status(201).json({ message: "Book created with validation!", book });
   } catch (error) {
+    // Gestion des erreurs éventuelles
     res.status(500).json({ error: error.message });
   }
 };

@@ -3,9 +3,10 @@ import express from "express";
 import {
   fetchBooks,
   getBookById,
-  addBook,
+  //addBook,
   deleteBook,
   updateBook,
+  addBook2,
   //updateAllTask,
 } from "../controllers/book.js";
 
@@ -17,7 +18,8 @@ router.get("/", fetchBooks);
 
 router.get("/:id", getBookById);
 
-router.post("/", addBook);
+//router.post("/", addBook);
+router.post("/", addBook2);
 
 router.patch("/:id", updateBook);
 
